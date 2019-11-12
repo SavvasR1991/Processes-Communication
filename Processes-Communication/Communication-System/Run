@@ -1,0 +1,59 @@
+#!/bin/bash
+DIR=$(pwd)			
+
+
+if [ "$1" == "clean" ] 
+then
+	
+	echo "Clean up.."
+	rm -rfv P1/build/*
+	rm -rfv P2/build/*
+
+elif [ "$1" == "-k" ]		
+then
+	if ! [[ "$2" =~ ^[0-9]+$ ]]
+	then
+		echo "Error in inputs. Must be an Integer.."
+	else
+		if [ "$2" -lt "0" ] ||  [ "$2" -gt  "100" ]
+		then
+			echo "Propability must be [0-100]"
+		else
+			echo "Running project.."
+
+			echo "CMake Building for P1.."
+			cd P1
+			mkdir build
+			cd build
+			cmake ..
+			echo "CMake Build done"
+			echo "Build project..."
+			make
+			echo "Build done..."
+
+
+			cd ../../
+
+			echo "CMake Building for P2.."
+			cd P2
+			mkdir build
+			cd build
+			cmake ..
+			echo "CMake Build done"
+			echo "Build project..."
+			make
+			echo "Build done..."
+			gnome-terminal -e ./P2Communication
+
+			cd ../../
+			cd P1
+			cd build
+			./P1Communication '$2'
+		fi
+	fi
+
+else
+	echo "Missing arguments.."
+fi
+
+
